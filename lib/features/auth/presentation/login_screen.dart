@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:soulvie_app/features/auth/logic/auth_controller.dart';
+import 'package:soulvie_app/features/auth/presentation/register_screen.dart';
+import 'package:soulvie_app/features/dashboard/presentation/dashboard_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -34,7 +36,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(
+                labelText: 'Email, Username, atau No. Telp',
+                hint: Text('Masukkan identitas akunmu'),
+              ),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -51,29 +56,53 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 onPressed: authState.isLoading
                     ? null
                     : () async {
+                        // Tangkap" messenger dan navigator SEBELUM await
+                        final messeger = ScaffoldMessenger.of(context);
+                        final navigator = Navigator.of(context);
+
                         await ref
                             .read(authControllerProvider.notifier)
                             .login(
                               _emailController.text,
                               _passwordController.text,
                             );
+                        if (!mounted) return;
 
                         // Cek jika error, tampilkan Snackbar
                         if (ref.read(authControllerProvider).hasError) {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          messeger.showSnackBar(
                             const SnackBar(
                               content: Text('Login Gagal! Cek email/password.'),
                             ),
                           );
                         } else {
                           // Jika sukses, pindah ke Dashboard (nanti kita buat)
-                          print("Login Berhasil!");
+
+                          if (mounted) {
+                            navigator.pushReplacement(
+                              MaterialPageRoute(
+                                builder: (_) => const DashboardScreen(),
+                              ),
+                            );
+                          }
                         }
                       },
                 child: authState.isLoading
                     ? const CircularProgressIndicator()
                     : const Text('Login'),
               ),
+            ),
+            const SizedBox(height: 20),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const RegisterScreen(),
+                  ),
+                );
+              },
+              child: const Text('Belum punya akun? Daftar'),
             ),
           ],
         ),
