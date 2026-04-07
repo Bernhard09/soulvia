@@ -4,6 +4,7 @@ import 'package:soulvie_app/common/app_colors.dart';
 import 'package:soulvie_app/component/header/auth_header.dart';
 import 'package:soulvie_app/component/text_field/auth_text_field.dart';
 import 'package:soulvie_app/features/auth/presentation/register_screen.dart';
+import 'package:soulvie_app/features/auth/screening/presentation/welcome_screening_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -130,6 +131,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               );
                               return;
                             }
+
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const KuesionerWelcomeScreen(),
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
