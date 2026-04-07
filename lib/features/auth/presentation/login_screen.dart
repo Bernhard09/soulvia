@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_svg/svg.dart'; // <-- Ini sudah tidak perlu di sini, bisa dihapus
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // 1. IMPORT RIVERPOD
 import 'package:soulvie_app/common/app_colors.dart';
 import 'package:soulvie_app/component/header/auth_header.dart';
 import 'package:soulvie_app/component/text_field/auth_text_field.dart';
+import 'package:soulvie_app/features/auth/logic/auth_controller.dart';
 import 'package:soulvie_app/features/auth/presentation/register_screen.dart';
+import 'package:soulvie_app/features/auth/screening/presentation/welcome_screening_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+// 4. UBAH MENJADI ConsumerState
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -28,6 +31,40 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
+    // 5. MENDENGARKAN STATE (Untuk Error dan Navigasi Sukses)
+    // ref.listen akan memantau perubahan pada AuthController tanpa me-rebuild seluruh UI
+    ref.listen(authControllerProvider, (previous, next) {
+      next.whenOrNull(
+        // Jika terjadi error saat login (misal salah password)
+        error: (error, stackTrace) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                error.toString().replaceAll('Exception: ', ''),
+              ), // Membersihkan tulisan Exception
+              backgroundColor: Colors.red,
+            ),
+          );
+        },
+        // Jika fungsi selesai tanpa error (Login Berhasil)
+        data: (_) {
+          // Kita cek apakah state sebelumnya adalah loading, untuk memastikan ini adalah hasil dari tombol yang baru saja ditekan
+          if (previous != null && previous.isLoading) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const KuesionerWelcomeScreen(),
+              ),
+            );
+          }
+        },
+      );
+    });
+
+    // 6. MEMANTAU STATUS LOADING
+    final authState = ref.watch(authControllerProvider);
+    final isLoading = authState.isLoading;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9F9),
@@ -61,8 +98,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       AuthTextField(
-                        label: 'Username',
-                        hintText: 'pandu123',
+                        label:
+                            'Username / Email / No. HP', // Diperbarui sesuai logika repository temanmu
+                        hintText: 'Masukkan identitasmu',
                         controller: _usernameController,
                       ),
                       const SizedBox(height: 24),
@@ -115,22 +153,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () {
-                            String inputUsername = _usernameController.text;
-                            String inputPassword = _passwordController.text;
+                          // 7. DISABLE TOMBOL SAAT LOADING
+                          onPressed: isLoading
+                              ? null
+                              : () {
+                                  String inputUsername =
+                                      _usernameController.text;
+                                  String inputPassword =
+                                      _passwordController.text;
 
-                            if (inputUsername.isEmpty ||
-                                inputPassword.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Username dan Password tidak boleh kosong!',
-                                  ),
-                                ),
-                              );
-                              return;
-                            }
-                          },
+                                  if (inputUsername.isEmpty ||
+                                      inputPassword.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Identitas dan Password tidak boleh kosong!',
+                                        ),
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  // 8. PANGGIL FUNGSI LOGIN DARI CONTROLLER
+                                  ref
+                                      .read(authControllerProvider.notifier)
+                                      .login(inputUsername, inputPassword);
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             shape: RoundedRectangleBorder(
@@ -138,14 +186,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             elevation: 0,
                           ),
-                          child: const Text(
-                            'Masuk',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
+                          // 9. UBAH TEKS MENJADI INDIKATOR LOADING JIKA SEDANG PROSES
+                          child: isLoading
+                              ? const SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2.5,
+                                  ),
+                                )
+                              : const Text(
+                                  'Masuk',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
                       ),
 
@@ -163,7 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => RegisterScreen(),
+                                  builder: (context) => const RegisterScreen(),
                                 ),
                               );
                             },

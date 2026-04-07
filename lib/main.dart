@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:soulvie_app/features/auth/presentation/login_screen.dart';
+import 'package:soulvie_app/features/auth/presentation/splash_screen.dart';
 import 'package:soulvie_app/features/auth/presentation/welcome_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-      home: const WelcomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }
