@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
+import '../logic/mood_controller.dart';
 import '../logic/profile_provider.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -10,7 +10,7 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(userProfileProvider);
-    const primaryTeal = Color(0xFF00A79D);
+    const primaryTeal = Color.fromARGB(255, 0, 159, 156);
 
     // Mengambil tinggi status bar (poni/kamera HP)
     final topPadding = MediaQuery.of(context).padding.top;
@@ -73,7 +73,7 @@ class DashboardScreen extends ConsumerWidget {
                   const SizedBox(height: 30),
 
                   // MOOD CARD (Otomatis menumpuk menyeberangi garis lengkung Teal)
-                  _buildMoodCard(),
+                  _buildMoodCard(context, ref),
 
                   const SizedBox(
                     height: 24,
@@ -128,7 +128,7 @@ class DashboardScreen extends ConsumerWidget {
 
   // --- SUB WIDGETS ---
 
-  Widget _buildMoodCard() {
+  Widget _buildMoodCard(context, ref) {
     final moods = [
       {'emoji': '😫', 'label': 'Depresi'},
       {'emoji': '😢', 'label': 'Sedih'},
@@ -160,33 +160,95 @@ class DashboardScreen extends ConsumerWidget {
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: moods
-                .map(
-                  (mood) => Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          shape: BoxShape.circle,
+            children: moods.asMap().entries.map((entry) {
+              final index = entry.key;
+              final mood = entry.value;
+              // Score dibuat 1 sampai 5 (1: Depresi, 5: Bahagia)
+              final moodScore = index + 1;
+
+              return GestureDetector(
+                onTap: () async {
+                  // Tampilkan indikator loading kecil di bawah
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Menyimpan mood...'),
+                      duration: Duration(milliseconds: 500),
+                    ),
+                  );
+
+                  // Bungkus dengan try-catch
+                  try {
+                    // Panggil fungsi provider
+                    await ref
+                        .read(moodControllerProvider.notifier)
+                        .saveMood(moodScore, mood['label']!);
+
+                    // Jika berhasil, muncul SnackBar Hijau
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Mood "${mood['label']}" berhasil dicatat! ✨',
+                          ),
+                          backgroundColor: Colors.green,
                         ),
-                        child: Text(
-                          mood['emoji']!,
-                          style: const TextStyle(fontSize: 32),
+                      );
+                    }
+                  } catch (e) {
+                    // Jika GAGAL, muncul SnackBar Merah berisi pesan error aslinya
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Gagal menyimpan: $e'),
+                          backgroundColor: Colors.red,
+                          duration: const Duration(seconds: 4),
                         ),
+                      );
+                    }
+                  }
+
+                  // // Panggil mesin provider untuk mengirim data
+                  // await ref
+                  //     .read(moodControllerProvider.notifier)
+                  //     .saveMood(moodScore, mood['label']!);
+
+                  // // Berikan feedback sukses ke user
+                  // if (context.mounted) {
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     SnackBar(
+                  //       content: Text(
+                  //         'Mood "${mood['label']}" berhasil dicatat! ✨',
+                  //       ),
+                  //       backgroundColor: Colors.green,
+                  //     ),
+                  //   );
+                  // }
+                },
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        shape: BoxShape.circle,
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        mood['label']!,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.black87,
-                        ),
+                      child: Text(
+                        mood['emoji']!,
+                        style: const TextStyle(fontSize: 32),
                       ),
-                    ],
-                  ),
-                )
-                .toList(),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      mood['label']!,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
           ),
         ],
       ),

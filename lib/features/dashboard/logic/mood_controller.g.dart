@@ -1,28 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'profile_provider.dart';
+part of 'mood_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userProfileHash() => r'6de5f928a4b71f381dc1317c540cd7e7cc249119';
+String _$moodControllerHash() => r'3c524cc8a0d332a9b55e4b66dc568231cec3b784';
 
-/// See also [userProfile].
-@ProviderFor(userProfile)
-final userProfileProvider =
-    AutoDisposeFutureProvider<Map<String, dynamic>>.internal(
-      userProfile,
-      name: r'userProfileProvider',
+/// See also [MoodController].
+@ProviderFor(MoodController)
+final moodControllerProvider =
+    AutoDisposeAsyncNotifierProvider<MoodController, void>.internal(
+      MoodController.new,
+      name: r'moodControllerProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$userProfileHash,
+          : _$moodControllerHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef UserProfileRef = AutoDisposeFutureProviderRef<Map<String, dynamic>>;
+typedef _$MoodController = AutoDisposeAsyncNotifier<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
