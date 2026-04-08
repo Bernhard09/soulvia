@@ -153,6 +153,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       SizedBox(
                         height: 50,
                         child: ElevatedButton(
+                          onPressed: () {
+                            String inputUsername = _usernameController.text;
+                            String inputPassword = _passwordController.text;
+
+                            if (inputUsername.isEmpty ||
+                                inputPassword.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Username dan Password tidak boleh kosong!',
+                                  ),
+                                ),
+                              );
+                              return;
+                            }
+
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const KuesionerWelcomeScreen(),
+                              ),
+                            );
+                          },
                           // 7. DISABLE TOMBOL SAAT LOADING
                           onPressed: isLoading
                               ? null
