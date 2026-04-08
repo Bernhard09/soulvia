@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AuthTextField extends StatelessWidget {
   final String label;
   final String hintText;
+  final bool isEmail;
   final bool isPassword;
   final Widget? suffixIcon;
   final TextEditingController? controller;
@@ -11,6 +12,7 @@ class AuthTextField extends StatelessWidget {
     super.key,
     required this.label,
     this.hintText = '',
+    this.isEmail = false,
     this.isPassword = false,
     this.suffixIcon,
     this.controller,
@@ -36,13 +38,15 @@ class AuthTextField extends StatelessWidget {
           obscureText: isPassword, // Untuk menyembunyikan teks (password)
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: const TextStyle(color: Colors.black87),
+            hintStyle: const TextStyle(color: Colors.grey),
             suffixIcon: suffixIcon, // Icon mata di sebelah kanan
             enabledBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.grey),
             ),
             focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFF009F9D)), // Warna AppColors.primary
+              borderSide: BorderSide(
+                color: Color(0xFF009F9D),
+              ), // Warna AppColors.primary
             ),
           ),
         ),

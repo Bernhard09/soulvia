@@ -14,6 +14,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // 1. Inisialisasi semua controller sesuai permintaan
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isPasswordVisible = false;
@@ -23,6 +24,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void dispose() {
     _fullNameController.dispose();
     _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -80,6 +82,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       const SizedBox(height: 20),
 
+                      AuthTextField(
+                        label: 'Email',
+                        hintText: 'pandu@email.com',
+                        controller: _emailController,
+                      ),
+                      const SizedBox(height: 20),
+          
                       AuthTextField(
                         label: 'Password',
                         hintText: '***************',

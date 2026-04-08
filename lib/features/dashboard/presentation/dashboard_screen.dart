@@ -104,25 +104,7 @@ class DashboardScreen extends ConsumerWidget {
         ),
       ),
 
-      // BOTTOM NAVIGATION BAR
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: primaryTeal,
-        unselectedItemColor: Colors.grey,
-        currentIndex: 0,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Dashboard"),
-          BottomNavigationBarItem(icon: Icon(Icons.alarm), label: "Aktivitas"),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: "Skrinning",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: "Profil",
-          ),
-        ],
-      ),
+
     );
   }
 
