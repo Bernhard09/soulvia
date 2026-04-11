@@ -77,7 +77,7 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Haii, $_username', // Nanti bisa diganti dinamis dari database
+                    'Haii, ${_username ?? 'user'}', // Nanti bisa diganti dinamis dari database
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 28,

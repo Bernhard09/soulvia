@@ -1,6 +1,6 @@
 class GratitudePost {
   final String id;
-  final String name;
+  String name;
   final String date;
   final String content;
   final bool isSaved;

@@ -4,7 +4,7 @@ import 'package:soulvie_app/service/lifecycle_service.dart';
 
 import 'dart:io'; // Untuk membaca file lokal
 import 'package:image_picker/image_picker.dart'; // Package yang baru diinstall
-
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../logic/koleksi_provider.dart';
 
 class BuatKoleksiScreen extends ConsumerStatefulWidget {
@@ -19,6 +19,10 @@ class _BuatKoleksiScreenState extends ConsumerState<BuatKoleksiScreen> {
   final List<String> _selectedImages =
       []; // List untuk menampung gambar sementara
   final ImagePicker _picker = ImagePicker();
+
+  final _supabase = Supabase.instance.client;
+  String? _username = null;
+  String? _avatarUrl = null;
 
   @override
   void dispose() {
@@ -42,6 +46,32 @@ class _BuatKoleksiScreenState extends ConsumerState<BuatKoleksiScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Gagal membuka galeri: $e')));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileData();
+  }
+
+  Future<void> _loadProfileData() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) return;
+
+      final data = await _supabase
+          .from('profiles')
+          .select()
+          .eq('id', user.id)
+          .single();
+
+      setState(() {
+        _username = data['full_name'] ?? 'User Soulvia';
+        _avatarUrl = data['avatar_url'];
+      });
+    } catch (e) {
+      print("Error ambil data: $e");
     }
   }
 
@@ -123,19 +153,23 @@ class _BuatKoleksiScreenState extends ConsumerState<BuatKoleksiScreen> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.grey.shade300,
+                          image: _avatarUrl != null
+                              ? DecorationImage(
+                                  image: NetworkImage(_avatarUrl!),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
                         ),
-                        child: const Icon(
-                          Icons.person,
-                          size: 30,
-                          color: Colors.grey,
-                        ),
+                        child: _avatarUrl == null
+                            ? Icon(Icons.person, size: 30, color: Colors.grey)
+                            : null,
                       ),
                       const SizedBox(width: 12),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Pandu Revi Arnan',
+                          Text(
+                            _username?? 'user',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,

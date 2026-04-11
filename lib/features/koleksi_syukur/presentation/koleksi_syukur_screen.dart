@@ -5,12 +5,49 @@ import 'package:soulvie_app/common/app_colors.dart';
 import 'package:soulvie_app/component/syukur/gratitude_postcard.dart';
 import 'package:soulvie_app/features/koleksi_syukur/logic/koleksi_provider.dart';
 import 'package:soulvie_app/features/koleksi_syukur/presentation/buat_koleksi_syukur.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class KoleksiSyukurScreen extends ConsumerWidget {
+class KoleksiSyukurScreen extends ConsumerStatefulWidget {
   const KoleksiSyukurScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<KoleksiSyukurScreen> createState() =>
+      _KoleksiSyukurScreenState();
+}
+
+class _KoleksiSyukurScreenState extends ConsumerState<KoleksiSyukurScreen> {
+  final _supabase = Supabase.instance.client;
+  String? _username = null;
+  String? _avatarUrl = null;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileData();
+  }
+
+  Future<void> _loadProfileData() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) return;
+
+      final data = await _supabase
+          .from('profiles')
+          .select()
+          .eq('id', user.id)
+          .single();
+
+      setState(() {
+        _username = data['full_name'] ?? 'User Soulvia';
+        _avatarUrl = data['avatar_url'];
+      });
+    } catch (e) {
+      print("Error ambil data: $e");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final semuaPostingan = ref.watch(koleksiControllerProvider);
 
     // 2. Filter data khusus untuk tab "Disimpan"
@@ -140,7 +177,8 @@ class KoleksiSyukurScreen extends ConsumerWidget {
                           ),
                           itemCount: semuaPostingan.length,
                           itemBuilder: (context, index) {
-                            return GratitudePostCard(
+                            semuaPostingan[index].name = _username ?? 'user';
+                            return GratitudePostcard(
                               post: semuaPostingan[index],
                             );
                           },
@@ -161,7 +199,7 @@ class KoleksiSyukurScreen extends ConsumerWidget {
                           ),
                           itemCount: postinganDisimpan.length,
                           itemBuilder: (context, index) {
-                            return GratitudePostCard(
+                            return GratitudePostcard(
                               post: postinganDisimpan[index],
                             );
                           },

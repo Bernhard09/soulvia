@@ -14,6 +14,7 @@ class LifeCycleService extends _$LifeCycleService {
       'move_detection': false,
       'mind_sorting': false,
       'complete': false,
+      'total': 0,
     };
   }
 
@@ -28,6 +29,8 @@ class LifeCycleService extends _$LifeCycleService {
           newState['move_detection'] == true &&
           newState['mind_sorting'] == true) {
         newState['complete'] = true;
+      } else {
+        newState['total'] = newState['total'] + 1;
       }
       state = newState;
     }

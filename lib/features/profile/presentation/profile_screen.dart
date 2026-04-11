@@ -191,13 +191,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             ),
                             child: Row(
                               children: [
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.arrow_back,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
+                                // IconButton(
+                                //   icon: const Icon(
+                                //     Icons.arrow_back,
+                                //     color: Colors.white,
+                                //   ),
+                                //   onPressed: () => Navigator.pop(context),
+                                // ),
                                 const SizedBox(width: 8),
                                 const Text(
                                   'Profil',

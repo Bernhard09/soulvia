@@ -62,14 +62,36 @@ class DashboardScreen extends ConsumerWidget {
                             color: Colors.white,
                           ),
                         ),
-                        const CircleAvatar(
-                          radius: 24,
-                          backgroundColor: Colors.white24,
-                          backgroundImage: AssetImage(
-                            'assets/images/avatar_astronot.png',
+                        Container(
+                          width: 64,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey.shade200,
+                            border: Border.all(color: Colors.white, width: 4),
+                            image: profile['avatar_url'] != null
+                                ? DecorationImage(
+                                    image: NetworkImage(profile['avatar_url']!),
+                                    fit: BoxFit.cover,
+                                  )
+                                : null, // Jika null, tampilkan child (Icon)
                           ),
-                          child: Icon(Icons.person, color: Colors.white),
+                          child: profile['avatar_url'] == null
+                              ? const Icon(
+                                  Icons.person,
+                                  size: 30,
+                                  color: Colors.grey,
+                                )
+                              : null,
                         ),
+                        // const CircleAvatar(
+                        //   radius: 24,
+                        //   backgroundColor: Colors.white24,
+                        //   backgroundImage: AssetImage(
+                        //     'assets/images/avatar_astronot.png',
+                        //   ),
+                        //   child: Icon(Icons.person, color: Colors.white),
+                        // ),
                       ],
                     ),
                   ),
