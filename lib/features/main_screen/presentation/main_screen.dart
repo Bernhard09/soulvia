@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:soulvie_app/common/app_colors.dart';
 import 'package:soulvie_app/features/activity/activity_menu/presentation/activity_screen.dart';
 import 'package:soulvie_app/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:soulvie_app/features/mood_tracker/presentation/mood_tracker_screen.dart';
 import 'package:soulvie_app/features/profile/presentation/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -22,7 +23,7 @@ class _MainScreenState extends State<MainScreen> {
   final _screens = [
     DashboardScreen(),
     ActivityScreen(),
-    Placeholder(),
+    MoodTrackerScreen(),
     ProfileScreen(),
   ];
 

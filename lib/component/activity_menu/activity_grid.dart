@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:soulvie_app/features/koleksi_syukur/presentation/koleksi_syukur_screen.dart';
 import 'package:soulvie_app/features/meditation/presentation/meditation_screen.dart';
 import 'package:soulvie_app/features/mindsorting/presentation/mindsorting_screen.dart';
+import 'package:soulvie_app/features/moving_detection/presentation/moving_detection_screen.dart';
 
 class ActivityGrid extends ConsumerWidget {
   const ActivityGrid({super.key});
@@ -23,7 +24,7 @@ class ActivityGrid extends ConsumerWidget {
         'title': 'moving detection',
         'color': Colors.green.shade100,
         'image': 'moving_detection.jpg',
-        'screen': Placeholder(),
+        'screen': MovingDetectionScreen(),
       },
       {
         'id': 'koleksi',

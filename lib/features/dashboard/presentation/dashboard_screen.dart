@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:soulvie_app/features/activity/activity_menu/presentation/activity_screen.dart';
 
 import '../logic/mood_controller.dart';
 import '../logic/profile_provider.dart';
@@ -83,13 +84,8 @@ class DashboardScreen extends ConsumerWidget {
 
                   const SizedBox(height: 24),
 
-                  // GRAFIK DASS-21
-                  _buildChartSection(),
-
-                  const SizedBox(height: 24),
-
                   // STATUS CARD (Depresi Normal)
-                  _buildStatusCard(primaryTeal),
+                  _buildStatusCard(primaryTeal, context),
 
                   const SizedBox(height: 24),
 
@@ -103,8 +99,6 @@ class DashboardScreen extends ConsumerWidget {
           ),
         ),
       ),
-
-
     );
   }
 
@@ -188,23 +182,6 @@ class DashboardScreen extends ConsumerWidget {
                       );
                     }
                   }
-
-                  // // Panggil mesin provider untuk mengirim data
-                  // await ref
-                  //     .read(moodControllerProvider.notifier)
-                  //     .saveMood(moodScore, mood['label']!);
-
-                  // // Berikan feedback sukses ke user
-                  // if (context.mounted) {
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     SnackBar(
-                  //       content: Text(
-                  //         'Mood "${mood['label']}" berhasil dicatat! ✨',
-                  //       ),
-                  //       backgroundColor: Colors.green,
-                  //     ),
-                  //   );
-                  // }
                 },
                 child: Column(
                   children: [
@@ -240,8 +217,8 @@ class DashboardScreen extends ConsumerWidget {
   Widget _buildCalendarRow(Color primaryTeal) {
     final days = [
       {'day': 'Sen', 'date': '18', 'active': false, 'fire': true},
-      {'day': 'Sel', 'date': '19', 'active': true, 'fire': true},
-      {'day': 'Rab', 'date': '20', 'active': false, 'fire': false},
+      {'day': 'Sel', 'date': '19', 'active': false, 'fire': true},
+      {'day': 'Rab', 'date': '20', 'active': true, 'fire': false},
       {'day': 'Kam', 'date': '21', 'active': false, 'fire': false},
       {'day': 'Jum', 'date': '22', 'active': false, 'fire': false},
       {'day': 'Sab', 'date': '23', 'active': false, 'fire': false},
@@ -306,29 +283,29 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildChartSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Container(
-        height: 150,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.grey.shade200),
-        ),
-        child: const Center(
-          child: Text(
-            "Grafik DASS-21 Mingguan\n(Siap dipasang fl_chart)",
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.grey),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _buildChartSection() {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(horizontal: 20),
+  //     child: Container(
+  //       height: 150,
+  //       width: double.infinity,
+  //       decoration: BoxDecoration(
+  //         color: Colors.white,
+  //         borderRadius: BorderRadius.circular(20),
+  //         border: Border.all(color: Colors.grey.shade200),
+  //       ),
+  //       child: const Center(
+  //         child: Text(
+  //           "Grafik DASS-21 Mingguan\n(Siap dipasang fl_chart)",
+  //           textAlign: TextAlign.center,
+  //           style: TextStyle(color: Colors.grey),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _buildStatusCard(Color primaryTeal) {
+  Widget _buildStatusCard(Color primaryTeal, BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       width: double.infinity,
@@ -350,7 +327,12 @@ class DashboardScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => ActivityScreen()),
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
               foregroundColor: Colors.black87,
@@ -371,12 +353,6 @@ class DashboardScreen extends ConsumerWidget {
 
   Widget _buildDailyActivities(Color primaryTeal) {
     final List<Map<String, dynamic>> activities = [
-      {
-        'title': 'Mood tracker',
-        'subtitle': 'Bagaimana perasaanmu hari ini?',
-        'icon': Icons.mood,
-        'isDone': true,
-      },
       {
         'title': 'Meditasi',
         'subtitle': 'Kembalikan mood dengan meditasi',
@@ -491,7 +467,7 @@ class DashboardScreen extends ConsumerWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            "1/5",
+                            "1/4",
                             style: TextStyle(
                               color: primaryTeal,
                               fontWeight: FontWeight.bold,
