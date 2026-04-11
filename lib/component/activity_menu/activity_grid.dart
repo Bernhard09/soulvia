@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:soulvie_app/features/koleksi_syukur/presentation/koleksi_syukur_screen.dart';
 import 'package:soulvie_app/features/meditation/presentation/meditation_screen.dart';
+import 'package:soulvie_app/features/mindsorting/presentation/mindsorting_screen.dart';
 
 class ActivityGrid extends ConsumerWidget {
   const ActivityGrid({super.key});
@@ -36,7 +37,7 @@ class ActivityGrid extends ConsumerWidget {
         'title': 'Mind Sorting',
         'color': Colors.orange.shade100,
         'image': 'mind_sorting.jpg',
-        'screen': Placeholder(),
+        'screen': MindSortingScreen(),
       },
     ];
 
